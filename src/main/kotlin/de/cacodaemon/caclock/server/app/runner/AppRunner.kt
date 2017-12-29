@@ -4,6 +4,7 @@ import de.cacodaemon.caclock.server.app.App
 import de.cacodaemon.caclock.server.app.AppPermission.*
 import jdk.nashorn.api.scripting.ClassFilter
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory
+import okhttp3.OkHttpClient
 import org.apache.log4j.Logger
 import spark.Request
 import spark.Response
@@ -19,7 +20,9 @@ object AppRunner {
             "java.lang.Integer",
             "de.cacodaemon.caclock.server.fonts.Fonts",
             "java.time.LocalDateTime", //TODO Permissions…
-            "de.cacodaemon.caclock.server.app.runner.Process" //TODO Permissions…
+            "de.cacodaemon.caclock.server.app.runner.Process", //TODO Permissions…
+            "okhttp3.OkHttpClient", //TODO Permissions…
+            "okhttp3.Request" //TODO Permissions…
     )
 
     private val typeDefs = """
@@ -28,6 +31,8 @@ var Integer = Java.type('java.lang.Integer');
 var LocalDateTime = Java.type('java.time.LocalDateTime'); //TODO Permissions…
 var Fonts = Java.type('de.cacodaemon.caclock.server.fonts.Fonts');
 var Process = Java.type('de.cacodaemon.caclock.server.app.runner.Process');
+var OkHttpClient = Java.type('okhttp3.OkHttpClient');
+var OkHttpRequest = Java.type('okhttp3.Request');
 """
 
     private var timer = Timer("AppRunner", true)
@@ -51,7 +56,7 @@ var Process = Java.type('de.cacodaemon.caclock.server.app.runner.Process');
                     }
 
                     if (app.permissions.contains(HTTP_CLIENT)) {
-                        return@ClassFilter className == "httpClassName"
+                        return@ClassFilter className == "httpClassName" //TODO
                     }
 
                     if (app.permissions.contains(LED)) {

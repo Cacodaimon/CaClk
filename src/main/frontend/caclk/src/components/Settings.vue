@@ -111,7 +111,7 @@
         }
       }
     },
-    created: function () {
+    mounted: function () {
       let that = this;
       Axios.get('/settings')
         .then(function (response) {

@@ -4,11 +4,11 @@
       <h4 class="card-title">
         Apps
       </h4>
-      <table class="table">
+      <table class="table table-responsive">
         <thead>
         <tr>
           <th>
-            ID
+            #
           </th>
           <th>
             Name
@@ -114,7 +114,7 @@
         apps: []
       }
     },
-    created: function () {
+    mounted: function () {
       let that = this;
       Axios.get('/app')
         .then(function (response) {

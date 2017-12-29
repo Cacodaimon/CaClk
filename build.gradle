@@ -32,6 +32,7 @@ dependencies {
     compile "com.sparkjava:spark-core:2.5.4"
     compile 'commons-io:commons-io:2.6'
     compile 'org.apache.httpcomponents:fluent-hc:4.5.3'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile fileTree(dir: 'libs', include: '*.jar')
 
     testCompile 'junit:junit:4.11'
@@ -45,9 +46,11 @@ task wrapper(type: Wrapper) {
 task webpackBuild(type: NpmTask) {
     args = ['run', 'build']
     execOverrides {
-        it.workingDir = 'src/main/frontend/caclock'
+        it.workingDir = 'src/main/frontend/caclk'
     }
 }
+
+compileKotlin.dependsOn webpackBuild
 
 jar {
     manifest {
@@ -55,4 +58,4 @@ jar {
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}.dependsOn(webpackBuild)
+}

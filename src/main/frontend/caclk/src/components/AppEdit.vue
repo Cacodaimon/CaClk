@@ -27,6 +27,7 @@
       </ul>
 
       <form @submit.prevent="saveApp(app)">
+
         <section v-show="activeTab == 0">
           <div class="form-row">
             <div class="form-group col">
@@ -136,10 +137,9 @@
             <label for="app.code">
               Code
             </label>
-            <div class="editor-space">
-              <codemirror v-model="app.code"
-                          :options="codeMirrorOptions"></codemirror>
-            </div>
+            <codemirror v-model="app.code"
+                        id="app.code"
+                        :options="codeMirrorOptions"></codemirror>
           </div>
 
         </section>
@@ -179,10 +179,10 @@
           lineNumbers: true,
           scrollbarStyle: 'overlay',
           extraKeys: {
-            'F11': function(cm) {
+            'F11': function (cm) {
               cm.setOption('fullScreen', !cm.getOption('fullScreen'));
             },
-            'Esc': function(cm) {
+            'Esc': function (cm) {
               if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
             }
           }
@@ -192,7 +192,7 @@
     components: {
       codemirror
     },
-    created: function () {
+    mounted: function () {
       let that = this;
       // noinspection JSUnresolvedVariable
       Axios.get(`/app/${that.$route.params.id}`)
@@ -242,8 +242,8 @@
   }
 </script>
 
-<style scoped>
-  .editor-space {
-    min-height: 400px;
+<style>
+  .CodeMirror {
+    height: auto !important;
   }
 </style>

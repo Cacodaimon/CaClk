@@ -10,8 +10,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "axios": "^0.17.1",
     "notyf-js": "^2.1.2",
+    "reconnectingwebsocket": "^1.0.0",
     "vue": "^2.5.2",
     "vue-codemirror": "^4.0.2",
     "vue-codemirror-lite": "^1.0.3",

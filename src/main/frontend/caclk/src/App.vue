@@ -1,40 +1,80 @@
 <template>
 
   <div id="app">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <router-link to="/" class="navbar-brand">CaClk</router-link>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
-              aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+      <div class="container">
+        <router-link to="/" class="navbar-brand">CaClk</router-link>
+        <button @click="navToggled = !navToggled"
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbar"
+                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <router-link to="/app" class="nav-link">Apps</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/app/add" class="nav-link">Add App</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/log" class="nav-link">Logging</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/settings" class="nav-link">Settings</router-link>
-          </li>
-        </ul>
+        <div :class="{show: navToggled}"
+             class="collapse navbar-collapse"
+             id="navbar">
+          <ul class="navbar-nav mr-auto">
+            <router-link to="/app"
+                         tag="li"
+                         exact="true"
+                         class="nav-item"
+                         active-class="active">
+              <a class="nav-link">Apps</a>
+            </router-link>
+
+            <router-link to="/app/add"
+                         tag="li"
+                         exact="true"
+                         class="nav-item"
+                         active-class="active">
+              <a class="nav-link">Add App</a>
+            </router-link>
+
+            <router-link to="/log"
+                         tag="li"
+                         exact="true"
+                         class="nav-item"
+                         active-class="active">
+              <a class="nav-link">Logging</a>
+            </router-link>
+
+            <router-link to="/settings"
+                         tag="li"
+                         exact="true"
+                         class="nav-item"
+                         active-class="active">
+              <a class="nav-link">Settings</a>
+            </router-link>
+          </ul>
+        </div>
       </div>
     </nav>
 
     <main role="main" class="container">
-      <router-view/>
+      <transition
+        name="custom-classes-transition"
+        enter-active-class="animated fadeInDown"
+        leave-active-class="animated fadeOutUp"
+        mode="out-in">
+        <router-view></router-view>
+      </transition>
     </main>
   </div>
 </template>
 
 <script>
+  import '../node_modules/animate.css/animate.css'
+
   export default {
-    name: 'CaClk'
+    name: 'CaClk',
+    data: function () {
+      return {
+        navToggled: false
+      }
+    }
   }
 </script>
 
@@ -43,15 +83,9 @@
 
   body {
     padding-top: 5rem;
-    font-size: 1.4rem;
   }
 
   .btn {
     cursor: pointer;
-  }
-
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: auto;
   }
 </style>
