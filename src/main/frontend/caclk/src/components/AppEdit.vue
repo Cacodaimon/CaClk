@@ -86,18 +86,11 @@
         <section v-show="activeTab == 1">
           <div class="form-group">
             <label for="app.permissions">Permissions</label>
-            <select v-model="app.permissions"
-                    id="app.permissions"
-                    class="form-control"
-                    multiple>
-              <option>LED</option>
-              <option>HTTP_CLIENT</option>
-              <option>HTTP_SERVER</option>
-              <option>INTERVAL</option>
-              <option>DATE_TIME</option>
-              <option>SETTINGS</option>
-              <option>PROCESS</option>
-            </select>
+
+            <v-select v-model="app.permissions"
+                      :options="['LED', 'HTTP_CLIENT', 'HTTP_SERVER', 'INTERVAL', 'DATE_TIME', 'SETTINGS', 'PROCESS']"
+                      multiple
+                      id="app.permissions"></v-select>
           </div>
 
           <div v-if="app.permissions && app.permissions.includes('INTERVAL')"
@@ -158,6 +151,7 @@
 <script>
   import Axios from 'axios'
   import Notyf from 'notyf-js'
+  import vSelect from 'vue-select'
   import '../../node_modules/notyf-js/dist/notyf.min.css'
   import {codemirror} from 'vue-codemirror-lite'
   import 'codemirror/mode/javascript/javascript'
@@ -190,7 +184,8 @@
       }
     },
     components: {
-      codemirror
+      codemirror,
+      vSelect
     },
     mounted: function () {
       let that = this;
