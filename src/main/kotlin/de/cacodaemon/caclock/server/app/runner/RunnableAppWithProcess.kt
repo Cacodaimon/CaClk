@@ -1,14 +1,13 @@
 package de.cacodaemon.caclock.server.app.runner
 
-import de.cacodaemon.caclock.server.app.App
 import de.cacodaemon.caclock.server.app.AppPermission
 import org.apache.log4j.Logger
 
-object RunnableAppWithProcess {
+object RunnableAppWithProcess : RunnableAppFeature {
 
     private val logger = Logger.getRootLogger()
 
-    fun decorate(runnableApp: RunnableApp): RunnableApp {
+    override fun addFeature(runnableApp: RunnableApp): RunnableApp {
         if (!runnableApp.app.permissions.contains(AppPermission.PROCESS)) {
             return runnableApp
         }
@@ -22,6 +21,6 @@ object RunnableAppWithProcess {
 
     private fun allowClass(runnableApp: RunnableApp, nameInScript: String, className: String) {
         runnableApp.addAllowableClass(className)
-        runnableApp.addAppScriptHeader("var $nameInScript = Java.type('$className');")
+        runnableApp.addAppScriptHeader("var $nameInScript = Java.type('$className')")
     }
 }
