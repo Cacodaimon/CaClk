@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.app
+package de.cacodaemon.caclk.server.app
 
 enum class AppPermission {
     LED,

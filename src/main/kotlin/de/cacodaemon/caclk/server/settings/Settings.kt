@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.settings
+package de.cacodaemon.caclk.server.settings
 
 import de.cacodaemon.rpiws28114j.StripType
 

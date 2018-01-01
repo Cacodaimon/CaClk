@@ -1,12 +1,12 @@
-package de.cacodaemon.caclock.server.app
+package de.cacodaemon.caclk.server.app
 
 data class App (
         var id: Int,
         val name: String,
         val version: String,
-        val author: Author,
+        val author: de.cacodaemon.caclk.server.app.Author,
         val code: String,
-        val permissions: List<AppPermission>,
+        val permissions: List<de.cacodaemon.caclk.server.app.AppPermission>,
         val autoStart: Boolean,
         val interval: Long?,
         val description: String?,

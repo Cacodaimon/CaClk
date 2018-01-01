@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.app.runner
+package de.cacodaemon.caclk.server.app.runner
 
 import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
 import java.io.InputStreamReader

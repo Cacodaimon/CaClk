@@ -1,7 +1,7 @@
-package de.cacodaemon.caclock.server.app.runner
+package de.cacodaemon.caclk.server.app.runner
 
-import de.cacodaemon.caclock.server.fonts.Font
-import de.cacodaemon.caclock.server.fonts.Font8x8
+import de.cacodaemon.caclk.server.fonts.Font
+import de.cacodaemon.caclk.server.fonts.Font8x8
 import de.cacodaemon.rpiws28114j.Color
 import de.cacodaemon.rpiws28114j.WS2811
 import java.lang.Math.*
@@ -16,7 +16,7 @@ object LedDisplay {
 
     private val numDisplays = 4
 
-    private var font: Font = Font8x8()
+    private var font: de.cacodaemon.caclk.server.fonts.Font = de.cacodaemon.caclk.server.fonts.Font8x8()
 
     @Synchronized
     public fun putPixel(x: Int, y: Int, color: Color): LedDisplay {
@@ -112,7 +112,7 @@ object LedDisplay {
         return putString(string, color, 0)
     }
 
-    public fun setFont(font: Font): LedDisplay {
+    public fun setFont(font: de.cacodaemon.caclk.server.fonts.Font): LedDisplay {
         this.font = font
         return this
     }

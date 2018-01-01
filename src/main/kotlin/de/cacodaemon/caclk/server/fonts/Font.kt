@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.fonts
+package de.cacodaemon.caclk.server.fonts
 
 interface Font {
 

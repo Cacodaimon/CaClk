@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.settings
+package de.cacodaemon.caclk.server.settings
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

@@ -1,4 +1,4 @@
-package de.cacodaemon.caclock.server.app
+package de.cacodaemon.caclk.server.app
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -16,37 +16,37 @@ object AppManager {
 
     private val fileName = "apps.json"
 
-    private lateinit var apps: MutableList<App>
+    private lateinit var apps: MutableList<de.cacodaemon.caclk.server.app.App>
 
     @Synchronized
     fun load() {
         if (!Files.exists(Paths.get(fileName))) {
-            save(emptyList<App>())
+            save(emptyList<de.cacodaemon.caclk.server.app.App>())
         }
 
-        val listType = object : TypeToken<List<App>>() {}.type
+        val listType = object : TypeToken<List<de.cacodaemon.caclk.server.app.App>>() {}.type
         apps = Gson().fromJson(FileReader(fileName), listType)
     }
 
     @Synchronized
-    fun all(): List<App> {
+    fun all(): List<de.cacodaemon.caclk.server.app.App> {
         return ArrayList(apps)
     }
 
     @Synchronized
-    fun get(id: Int): App? {
+    fun get(id: Int): de.cacodaemon.caclk.server.app.App? {
         return apps.find { (id1) -> id1 == id }
     }
 
     @Synchronized
-    fun add(app: App) {
+    fun add(app: de.cacodaemon.caclk.server.app.App) {
         app.id = 1
-        apps.maxBy(App::id)?.let { a -> app.id = a.id + 1 }
+        apps.maxBy(de.cacodaemon.caclk.server.app.App::id)?.let { a -> app.id = a.id + 1 }
         apps.add(app)
     }
 
     @Synchronized
-    fun edit(id: Int, editedApp: App) {
+    fun edit(id: Int, editedApp: de.cacodaemon.caclk.server.app.App) {
         val app = apps.find { (id1) -> id1 == id }
         apps[apps.indexOf(app)] = editedApp
     }
@@ -63,12 +63,12 @@ object AppManager {
     }
 
     @Synchronized
-    fun getAutoStart(): App? {
+    fun getAutoStart(): de.cacodaemon.caclk.server.app.App? {
         return apps.find { app -> app.autoStart }
     }
 
     @Synchronized
-    private fun save(apps: List<App>) {
+    private fun save(apps: List<de.cacodaemon.caclk.server.app.App>) {
         val json = GsonBuilder()
                 .setPrettyPrinting()
                 .create()

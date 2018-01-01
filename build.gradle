@@ -17,7 +17,7 @@ apply plugin: 'application'
 apply plugin: 'idea'
 apply plugin: 'com.moowork.node'
 
-mainClassName = 'de.cacodaemon.caclock.server.MainKt'
+mainClassName = 'de.cacodaemon.caclk.server.MainKt'
 
 defaultTasks 'run'
 

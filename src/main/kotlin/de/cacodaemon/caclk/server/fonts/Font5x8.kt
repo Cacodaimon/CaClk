@@ -1,9 +1,9 @@
-package de.cacodaemon.caclock.server.fonts
+package de.cacodaemon.caclk.server.fonts
 
 /**
  * @link https://github.com/idispatch/raster-fonts
  */
-class Font5x8 : Font {
+class Font5x8 : de.cacodaemon.caclk.server.fonts.Font {
 
     override val fontWidth: Int
         get() = 5
