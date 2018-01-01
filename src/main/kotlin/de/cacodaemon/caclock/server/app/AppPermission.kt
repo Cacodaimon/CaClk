@@ -7,5 +7,6 @@ enum class AppPermission {
     INTERVAL,
     DATE_TIME,
     SETTINGS,
-    PROCESS
+    PROCESS,
+    LOGGER
 }

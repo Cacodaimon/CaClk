@@ -6,6 +6,7 @@ import de.cacodaemon.caclock.server.app.AppManager
 import de.cacodaemon.caclock.server.app.logger.LoggerAdapter
 import de.cacodaemon.caclock.server.app.logger.WebSocketAdapter
 import de.cacodaemon.caclock.server.app.runner.AppRunner
+import de.cacodaemon.caclock.server.app.runner.RunnableAppWithHttpServer
 import de.cacodaemon.caclock.server.settings.Settings
 import de.cacodaemon.caclock.server.settings.SettingsManager
 import de.cacodaemon.rpiws28114j.*
@@ -31,7 +32,11 @@ fun main(args: Array<String>) {
             SettingsManager.settings.brightness
     ))
 
-    AppManager.getAutoStart()?.let { app -> AppRunner.run(app) }
+    try {
+        AppManager.getAutoStart()?.let { app -> AppRunner.run(app) }
+    } catch (e: Exception) {
+        Logger.getLogger("main").warn(e.message)
+    }
 
     webSocket("/log", WebSocketAdapter::class.java)
 
@@ -94,7 +99,7 @@ fun main(args: Array<String>) {
             return@get null
         }
 
-        AppRunner.appApi(request, response)
+        RunnableAppWithHttpServer.appApi(request, response)
     }
 
     get("/running-app") { _, response ->

@@ -47,9 +47,10 @@
           author: {
             name: ""
           },
+          settings: "{}",
           autoStart: false,
           permissions: ["LED"],
-          code: `var app = function(ledDisplay) {
+          code: `var init = function() {
   ledDisplay
     .clear()
     .putPixel(1, 1, Color.GREEN)

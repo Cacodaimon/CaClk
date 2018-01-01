@@ -66,8 +66,6 @@ class RunnableApp(public val app: App) {
     }
 
     public fun run() {
-        logger.info("$appScriptHeader\n\n${app.code}")
-
         engine!!.eval("$appScriptHeader\n\n${app.code}")
 
         startUpCallbacks.forEach { callBack -> callBack() }

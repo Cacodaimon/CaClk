@@ -88,7 +88,7 @@
             <label for="app.permissions">Permissions</label>
 
             <v-select v-model="app.permissions"
-                      :options="['LED', 'HTTP_CLIENT', 'HTTP_SERVER', 'INTERVAL', 'DATE_TIME', 'SETTINGS', 'PROCESS']"
+                      :options="['LED', 'HTTP_CLIENT', 'HTTP_SERVER', 'INTERVAL', 'DATE_TIME', 'SETTINGS', 'PROCESS', 'LOGGER']"
                       multiple
                       id="app.permissions"></v-select>
           </div>

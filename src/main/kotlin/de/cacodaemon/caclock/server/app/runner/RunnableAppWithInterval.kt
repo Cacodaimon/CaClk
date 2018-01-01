@@ -32,7 +32,7 @@ object RunnableAppWithInterval : RunnableAppFeature {
                     logger.warn(e.message)
                 }
             }
-        }, 0, interval)
+        }, 500, interval)
 
         runnableApp.addTearDownCallbacks({
             timer.cancel()
