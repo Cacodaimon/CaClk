@@ -28,7 +28,7 @@
 
       <form @submit.prevent="saveApp(app)">
 
-        <section v-show="activeTab == 0">
+        <section v-show="activeTab === 0">
           <div class="form-row">
             <div class="form-group col">
               <label for="app.name">Name</label>
@@ -83,7 +83,7 @@
           </div>
         </section>
 
-        <section v-show="activeTab == 1">
+        <section v-show="activeTab === 1">
           <div class="form-group">
             <label for="app.permissions">Permissions</label>
 
@@ -125,7 +125,7 @@
           </div>
         </section>
 
-        <section v-show="activeTab == 2">
+        <section v-show="activeTab === 2">
           <div class="form-group">
             <label for="app.code">
               Code

@@ -2,8 +2,25 @@
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">Add an app</h4>
+
+      <ul class="nav nav-tabs nav-justified">
+        <li class="nav-item">
+          <a @click.prevent="activeTab = 0"
+             :class="{active: activeTab === 0}"
+             class="nav-link"
+             href="#">Simple add</a>
+        </li>
+        <li class="nav-item">
+          <a @click.prevent="activeTab = 1"
+             :class="{active: activeTab === 1}"
+             class="nav-link"
+             href="#">Add from JSON</a>
+        </li>
+      </ul>
+
       <form @submit.prevent="addApp">
 
+        <section v-show="activeTab === 0">
         <div class="form-group">
           <label for="app.name">Name</label>
 
@@ -22,6 +39,20 @@
                  type="text"
                  required="required"/>
         </div>
+        </section>
+
+        <section v-show="activeTab === 1">
+
+          <div class="form-group">
+            <label for="json">
+              App JSON
+            </label>
+            <textarea v-model="json"
+                      id="json"
+                      class="form-control"
+                      rows="10"></textarea>
+          </div>
+        </section>
 
         <hr/>
 
@@ -41,6 +72,8 @@
     name: 'AppAdd',
     data: function () {
       return {
+        activeTab: 0,
+        json: "",
         app: {
           name: "",
           version: "0.0.1",
@@ -57,6 +90,20 @@
     .render();
 };`
         }
+      }
+    },
+    mounted: function () {
+      this.$data.json = JSON.stringify(this.$data.app, null, 2)
+    },
+    watch: {
+      json: function () {
+        this.$data.app = JSON.parse(this.$data.json)
+      },
+      "app.name": function () {
+        this.$data.json = JSON.stringify(this.$data.app, null, 2)
+      },
+      "app.author.name": function () {
+        this.$data.json = JSON.stringify(this.$data.app, null, 2)
       }
     },
     methods: {
