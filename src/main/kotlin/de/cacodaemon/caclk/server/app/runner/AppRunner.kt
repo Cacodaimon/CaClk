@@ -15,29 +15,29 @@ import javax.script.ScriptEngine
 
 object AppRunner {
 
-    var runnableApp: de.cacodaemon.caclk.server.app.runner.RunnableApp? = null
+    var runnableApp: RunnableApp? = null
         private set
 
-    var runningApp: de.cacodaemon.caclk.server.app.App? = null
+    var runningApp: App? = null
         get() = runnableApp?.app
 
     @Synchronized
-    fun run(app: de.cacodaemon.caclk.server.app.App) {
+    fun run(app: App) {
         if (runnableApp != null) {
             runnableApp!!.stop()
         }
 
-        runnableApp = de.cacodaemon.caclk.server.app.runner.RunnableApp(app)
+        runnableApp = RunnableApp(app)
 
         listOf(
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithDateTime,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithHttpClient,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithHttpServer,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithSettings,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithProcess,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithLogger,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithLed,
-                de.cacodaemon.caclk.server.app.runner.RunnableAppWithInterval
+                RunnableAppWithDateTime,
+                RunnableAppWithHttpClient,
+                RunnableAppWithHttpServer,
+                RunnableAppWithSettings,
+                RunnableAppWithProcess,
+                RunnableAppWithLogger,
+                RunnableAppWithLed,
+                RunnableAppWithInterval
         ).forEach { f -> f.addFeature(runnableApp!!) }
 
         runnableApp!!.run()

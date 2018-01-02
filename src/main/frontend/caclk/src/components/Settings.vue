@@ -28,6 +28,18 @@
         </div>
 
         <div class="form-group">
+          <label for="settings.softBrightness">Soft Brightness</label>
+          <input v-model="settings.softBrightness"
+                 id="settings.softBrightness"
+                 class="form-control"
+                 type="number"
+                 min="0.01"
+                 max="1.00"
+                 step="0.01"
+                 required="required"/>
+        </div>
+
+        <div class="form-group">
           <label for="settings.gpioPin">GPIO Pin</label>
           <input v-model="settings.gpioPin"
                  id="settings.gpioPin"

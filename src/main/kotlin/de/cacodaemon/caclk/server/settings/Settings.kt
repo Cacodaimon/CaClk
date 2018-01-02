@@ -9,5 +9,6 @@ data class Settings (
         val ledCount: Int,
         val stripType: StripType,
         val invert: Boolean,
-        val brightness: Int
+        val brightness: Int,
+        val softBrightness: Double
 )

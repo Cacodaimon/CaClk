@@ -16,7 +16,7 @@ object LedDisplay {
 
     private val numDisplays = 4
 
-    private var font: de.cacodaemon.caclk.server.fonts.Font = de.cacodaemon.caclk.server.fonts.Font8x8()
+    private var font: Font = Font8x8()
 
     @Synchronized
     public fun putPixel(x: Int, y: Int, color: Color): LedDisplay {
@@ -31,7 +31,7 @@ object LedDisplay {
         val display = floor(x / width.toDouble())
         val displayOffset = displayPixelCount * display
 
-        WS2811.setPixel((displayOffset + (y - display) * width + x).toInt(), color)
+        WS2811.setPixel((displayOffset + (y - display) * width + x).toInt(), darkenColor(color))
         return this
     }
 
@@ -61,13 +61,60 @@ object LedDisplay {
         return this
     }
 
-    @Synchronized
-    public fun fill(color: Color): LedDisplay {
-        for (i in 0..displayPixelCount * numDisplays) {
-            WS2811.setPixel(i, color)
+    public fun putString(string: String, color: Color, offsetX: Int, offsetY: Int): LedDisplay {
+        for (i in 0 until string.length) {
+            putChar(string[i], color, i * font.fontWidth + offsetX, offsetY)
         }
 
         return this
+    }
+
+    public fun putString(string: String, color: Color, offsetX: Int): LedDisplay {
+        return putString(string, color, offsetX, 0)
+    }
+
+    public fun putString(string: String, color: Color): LedDisplay {
+        return putString(string, color, 0)
+    }
+
+    public fun clear(): LedDisplay {
+        return fill(Color.BLACK)
+    }
+
+    @Synchronized
+    public fun fill(color: Color): LedDisplay {
+        for (i in 0..displayPixelCount * numDisplays) {
+            WS2811.setPixel(i, darkenColor(color))
+        }
+
+        return this
+    }
+
+    @Synchronized
+    public fun render(): LedDisplay {
+        WS2811.render()
+        return this
+    }
+
+    public fun setFont(font: de.cacodaemon.caclk.server.fonts.Font): LedDisplay {
+        this.font = font
+        return this
+    }
+
+    private fun darkenColor(color: Color): Color {
+        if (Brightness.value == 1.0 || Math.abs(Brightness.value - 1.0) < 0.01) {
+            return color
+        }
+
+        val r = color.rgb and 0x0000FF
+        val g = color.rgb and 0x00FF00 shr 8
+        val b = color.rgb and 0xFF0000 shr 16
+
+        return Color(
+                Math.ceil(r * Brightness.value).toInt(),
+                Math.ceil(g * Brightness.value).toInt(),
+                Math.ceil(b * Brightness.value).toInt()
+        )
     }
 
     private fun putChar(char: Char, color: Color, offsetX: Int, offsetY: Int): LedDisplay {
@@ -93,37 +140,6 @@ object LedDisplay {
             y++
         }
 
-        return this
-    }
-
-    public fun putString(string: String, color: Color, offsetX: Int, offsetY: Int): LedDisplay {
-        for (i in 0 until string.length) {
-            putChar(string[i], color, i * font.fontWidth + offsetX, offsetY)
-        }
-
-        return this
-    }
-
-    public fun putString(string: String, color: Color, offsetX: Int): LedDisplay {
-        return putString(string, color, offsetX, 0)
-    }
-
-    public fun putString(string: String, color: Color): LedDisplay {
-        return putString(string, color, 0)
-    }
-
-    public fun setFont(font: de.cacodaemon.caclk.server.fonts.Font): LedDisplay {
-        this.font = font
-        return this
-    }
-
-    public fun clear(): LedDisplay {
-        return fill(Color.BLACK)
-    }
-
-    @Synchronized
-    public fun render(): LedDisplay {
-        WS2811.render()
         return this
     }
 }

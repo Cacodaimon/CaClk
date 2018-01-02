@@ -3,7 +3,7 @@ package de.cacodaemon.caclk.server.fonts
 /**
  * @link https://github.com/idispatch/raster-fonts
  */
-class Font5x8 : de.cacodaemon.caclk.server.fonts.Font {
+class Font5x8 : Font {
 
     override val fontWidth: Int
         get() = 5

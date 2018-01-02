@@ -6,14 +6,15 @@
     "author": {
       "name": "Guido Krömer"
     },
-    "code": "var led \u003d null;\nvar message \u003d \"13:37:00\";\nvar offsetMax \u003d 0;\nvar font \u003d Fonts.FONT_8X8.font;\nvar offsetMin \u003d (message.length * (-1 * font.fontWidth)) + 32;\nvar offset \u003d offsetMin;\nvar brightness \u003d 1;\nvar color1 \u003d new Color(brightness, 0, 0);\nvar color2 \u003d Color.BLACK;\nvar bgColor1 \u003d color2;\nvar bgColor2 \u003d color1;\n\nvar leftPad \u003d function(pad, str) {\n  str \u003d \"\" + str;\n  return pad.substring(0, pad.length - str.length) + str;\n};\n\nvar renderTime \u003d function(offset, color, bgColor) {\n  var now \u003d LocalDateTime.now();\n\n  message \u003d leftPad(\"00\", now.getHour()) + \":\" + leftPad(\"00\", now.getMinute()) + \":\" + leftPad(\"00\", now.getSecond());\n\n  led\n    .fill(color)\n    .putString(message, bgColor, offset, 0)\n    .render()\n}\n\nvar app \u003d function(ledDisplay) {\n  led \u003d ledDisplay.clear().render();\n  led.setFont(font);\n};\n\nvar direction \u003d 1;\n\nvar interval \u003d function() {\n  renderTime(offset, direction \u003e 0 ? color1 : color2, direction \u003e 0 ? bgColor1 : bgColor2);\n  offset +\u003d direction;\n  if (offset \u003e offsetMax || offset \u003c offsetMin) {\n    direction *\u003d -1;\n  }\n};",
+    "code": "var message \u003d \"13:37:00\";\nvar offsetMax \u003d 0;\nvar font \u003d Fonts.FONT_8X8.font;\nvar offsetMin \u003d (message.length * (-1 * font.fontWidth)) + 32;\nvar offset \u003d offsetMin;\nvar color1 \u003d Color.BLACK;\nvar color2 \u003d Color.BLUE;\nvar bgColor1 \u003d color2;\nvar bgColor2 \u003d color1;\n\nvar leftPad \u003d function(pad, str) {\n  str \u003d \"\" + str;\n  return pad.substring(0, pad.length - str.length) + str;\n};\n\nvar renderTime \u003d function(offset, color, bgColor) {\n  var now \u003d DateTime.now();\n\n  message \u003d leftPad(\"00\", now.getHour()) + \":\" + leftPad(\"00\", now.getMinute()) + \":\" + leftPad(\"00\", now.getSecond());\n\n  ledDisplay\n    .fill(color)\n    .putString(message, bgColor, offset, 0)\n    .render()\n}\n\nvar init \u003d function() {\n  ledDisplay\n    .clear()\n    .render()\n    .setFont(font);\n};\n\nvar direction \u003d 1;\n\nvar interval \u003d function() {\n  renderTime(offset, direction \u003e 0 ? color1 : color2, direction \u003e 0 ? bgColor1 : bgColor2);\n  offset +\u003d direction;\n  if (offset \u003e offsetMax || offset \u003c offsetMin) {\n    direction *\u003d -1;\n  }\n};",
     "permissions": [
       "LED",
       "INTERVAL",
       "DATE_TIME"
     ],
     "autoStart": false,
-    "interval": 125,
+    "interval": 100,
+    "description": "A digital clock with scrolling text.",
     "settings": "{\n  \"message\": \"13:37:00\"\n}"
   },
   {
@@ -23,14 +24,15 @@
     "author": {
       "name": "Guido Krömer"
     },
-    "code": "var led \u003d null;\nvar app \u003d function(ledDisplay) {\n  led \u003d ledDisplay;\n};\n\nvar interval \u003d function () {\n  led.clear();\n  var now \u003d LocalDateTime.now();\n  var time \u003d [\n    Integer.toBinaryString(now.getHour()).split(\"\").reverse(),\n    Integer.toBinaryString(now.getMinute()).split(\"\").reverse(),\n    Integer.toBinaryString(now.getSecond()).split(\"\").reverse()\n  ];\n  var colors \u003d [\n    new Color(255, 0, 0), new Color(0, 255, 0), new Color(0, 0, 255),\n    new Color(8, 0, 0), new Color(0, 8, 0), new Color(0, 0, 8)\n  ];\n\n  for (var t \u003d 0; t \u003c time.length; t++) {\n    for (var i \u003d 0; i \u003c time[t].length; i++) {\n       led.putPixel(i, t, time[t][i] \u003d\u003d \u00271\u0027 ? colors[t] : colors[t+3]);\n    }\n  }\n\n  led.render();\n};",
+    "code": "var init \u003d function() {};\n\nvar interval \u003d function () {\n  ledDisplay.clear();\n  var now \u003d DateTime.now();\n  var time \u003d [\n    Integer.toBinaryString(now.getHour()).split(\"\").reverse(),\n    Integer.toBinaryString(now.getMinute()).split(\"\").reverse(),\n    Integer.toBinaryString(now.getSecond()).split(\"\").reverse()\n  ];\n  var colors \u003d [\n    new Color(192, 0, 0), new Color(0, 192, 0), new Color(0, 0, 192),\n    new Color(1, 0, 0), new Color(0, 1, 0), new Color(0, 0, 1)\n  ];\n\n  for (var t \u003d 0; t \u003c time.length; t++) {\n    for (var i \u003d 0; i \u003c time[t].length; i++) {\n       ledDisplay.putPixel(i, t, time[t][i] \u003d\u003d \u00271\u0027 ? colors[t] : colors[t+3]);\n    }\n  }\n\n  ledDisplay.render();\n};",
     "permissions": [
       "LED",
       "INTERVAL",
       "DATE_TIME"
     ],
     "autoStart": false,
-    "interval": 100
+    "interval": 250,
+    "description": "A very simple binary clock."
   },
   {
     "id": 6,
@@ -40,14 +42,15 @@
       "name": "Guido Krömer",
       "eMail": "mail@cacodaemon.de"
     },
-    "code": "var app \u003d function(ledDisplay, settings) {\n  var message \u003d JSON.parse(settings).message;\n  ledDisplay.setFont(Fonts.FONT_6X8.font);\n  ledDisplay.clear().putString(message, Color.fromRandom(), 0, 0).render();\n};",
+    "code": "var init \u003d function() {\n  ledDisplay\n    .setFont(Fonts.FONT_6X8.font)\n    .clear()\n    .putString(settings.message, Color.fromRandom(), 0, 0)\n    .render();\n};",
     "permissions": [
-      "LED"
+      "LED",
+      "SETTINGS"
     ],
     "autoStart": false,
     "interval": 0,
     "description": "Shows a text message stored in the app\u0027s settings.",
-    "settings": "{\n  \"message\": \"Hello\"\n}"
+    "settings": "{\n  \"message\": \"ROFL\"\n}"
   },
   {
     "id": 7,
@@ -57,10 +60,10 @@
       "name": "Guido Krömer",
       "eMail": "mail@cacodaemon.de"
     },
-    "code": "var ledDisp \u003d null;\nvar form \u003d \"\u003chtml\u003e \\\n\u003ctitle\u003eShow a message\u003c/title\u003e \\\n\u003cbody\u003e \\\n\u003cform action\u003d\u0027\u0027 method\u003dGET\u003e \\\n\u003clabel\u003eMessage \u003cinput type\u003dtext name\u003dmessage required\u003drequired/\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eColor \u003cinput type\u003dcolor name\u003dcolor value\u003d#00ff00\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eBG Color \u003cinput type\u003dcolor name\u003dbgcolor value\u003d#010101\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eFont Size \u003cselect name\u003dsize\u003e\u003coption\u003e8X8\u003c/option\u003e\u003coption\u003e6X8\u003c/option\u003e\u003coption\u003e5X8\u003c/option\u003e\u003c/select\u003e\u003cbr /\u003e \\\n\u003cinput type\u003dsubmit value\u003dShow /\u003e \\\n\u003c/form\u003e \\\n\u003c/body\u003e \\\n\u003c/html\u003e\";\n\nvar app \u003d function(ledDisplay) {\n  ledDisp \u003d ledDisplay;  \n\n  ledDisplay.setFont(Fonts.FONT_8X8.font);\n  ledDisplay\n    .clear()\n    .putString(\"API\", new Color(64,64,64), 0, 0)\n    .render();\n};\n\nvar api \u003d function (request, response) {\n  var message \u003d request.queryParams(\"message\");\n\n  if (message \u003d\u003d null) {\n    return form;\n  }\n\n  var color \u003d parseInt(request.queryParams(\"color\").replace(\u0027#\u0027, \u0027\u0027), 16);\n  var bgColor \u003d parseInt(request.queryParams(\"bgcolor\").replace(\u0027#\u0027, \u0027\u0027), 16);\n  var size \u003d request.queryParams(\"size\");\n\n  switch (size) {\n    case \"8X8\":\n        ledDisp.setFont(Fonts.FONT_8X8.font);\n        break;\n    case \"6X8\":\n        ledDisp.setFont(Fonts.FONT_6X8.font);\n        break;\n    default:\n        ledDisp.setFont(Fonts.FONT_5X8.font);\n  }\n  \n  ledDisp\n    .fill(new Color(bgColor))\n    .putString(message, new Color(color), 0, 0)\n    .render();\n\n  return form;\n}",
+    "code": "var form \u003d \"\u003chtml\u003e \\\n\u003ctitle\u003eShow a message\u003c/title\u003e \\\n\u003cbody\u003e \\\n\u003cform action\u003d\u0027\u0027 method\u003dGET\u003e \\\n\u003clabel\u003eMessage \u003cinput type\u003dtext name\u003dmessage required\u003drequired/\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eColor \u003cinput type\u003dcolor name\u003dcolor value\u003d#00ff00\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eBG Color \u003cinput type\u003dcolor name\u003dbgcolor value\u003d#010101\u003e\u003c/label\u003e\u003cbr /\u003e \\\n\u003clabel\u003eFont Size \u003cselect name\u003dsize\u003e\u003coption value\u003d\u0027FONT_8X8\u0027\u003e8X8\u003c/option\u003e\u003coption value\u003d\u0027FONT_6X8\u0027\u003e6X8\u003c/option\u003e\u003coption value\u003d\u0027FONT_5X8\u0027\u003e5X8\u003c/option\u003e\u003coption value\u003d\u0027FONT_4X7\u0027\u003e4X7\u003c/option\u003e\u003c/select\u003e\u003cbr /\u003e \\\n\u003cinput type\u003dsubmit value\u003dShow /\u003e \\\n\u003c/form\u003e \\\n\u003c/body\u003e \\\n\u003c/html\u003e\";\n\nvar init \u003d function() { \n  ledDisplay\n    .setFont(Fonts.FONT_8X8.font)\n    .clear()\n    .putString(\"API\", new Color(64,64,64), 0, 0)\n    .render();\n};\n\nvar api \u003d function (request, response) {\n  var message \u003d request.queryParams(\"message\");\n\n  if (message \u003d\u003d null) {\n    return form;\n  }\n\n  var color \u003d parseInt(request.queryParams(\"color\").replace(\u0027#\u0027, \u0027\u0027), 16);\n  var bgColor \u003d parseInt(request.queryParams(\"bgcolor\").replace(\u0027#\u0027, \u0027\u0027), 16);\n  var size \u003d request.queryParams(\"size\");\n\n  ledDisplay\n    .setFont(Fonts.valueOf(size).font)\n    .fill(new Color(bgColor))\n    .putString(message, new Color(color), 0, 0)\n    .render();\n\n  return form;\n}",
     "permissions": [
       "LED",
-      "API"
+      "HTTP_SERVER"
     ],
     "autoStart": false,
     "description": "Reads a message from API and displays it. "
@@ -72,7 +75,7 @@
     "author": {
       "name": "Guido Krömer"
     },
-    "code": "var app \u003d function(ledDisplay) {\n    var colDest \u003d 16;\n    ledDisplay.setFont(Fonts.FONT_5X8.font);\n    ledDisplay\n        .clear()\n        .putString(\"CaClk\", new Color(0, colDest, 0), 1, 1)\n        .putString(\"\u0003\", new Color(colDest, 0, colDest), 26, 1)\n        .line(0, 0, 31, 0, new Color(colDest, 0, 0))\n        .line(0, 7, 31, 7, new Color(0, 0, colDest))\n        .line(0, 0, 0, 7, new Color(0, colDest, colDest))\n        .line(31, 0, 31, 7, new Color(colDest, colDest, 0))\n        .putPixel(0, 0, new Color(colDest, colDest, colDest))\n        .putPixel(31, 0, new Color(colDest, colDest, colDest))\n        .putPixel(0, 7, new Color(colDest, colDest, colDest))\n        .putPixel(31, 7, new Color(colDest, colDest, colDest))\n        .render();\n};",
+    "code": "var init \u003d function () {\n    var brightness \u003d 64;\n    ledDisplay\n        .setFont(Fonts.FONT_5X8.font)\n        .clear()\n        .putString(\"CaClk\", new Color(0, brightness, 0), 1, 1)\n        .putString(\"\u0003\", new Color(brightness, 0, brightness), 26, 1)\n        .line(0, 0, 31, 0, new Color(brightness, 0, 0))\n        .line(0, 7, 31, 7, new Color(0, 0, brightness))\n        .line(0, 0, 0, 7, new Color(0, brightness, brightness))\n        .line(31, 0, 31, 7, new Color(brightness, brightness, 0))\n        .putPixel(0, 0, new Color(brightness, brightness, brightness))\n        .putPixel(31, 0, new Color(brightness, brightness, brightness))\n        .putPixel(0, 7, new Color(brightness, brightness, brightness))\n        .putPixel(31, 7, new Color(brightness, brightness, brightness))\n        .render();\n};",
     "permissions": [
       "LED"
     ],
@@ -86,13 +89,15 @@
     "author": {
       "name": "GK"
     },
-    "code": "var led \u003d null;\nvar process \u003d new Process();\nvar color \u003d new Color(1, 0, 0);\n\nvar app \u003d function(ledDisplay) {\n\tled \u003d ledDisplay\n\t\t.clear()\n\t\t.render()\n\t\t.setFont(Fonts.valueOf(\"FONT_5X8\").font)\n};\n\nvar interval \u003d function(milis) {\n        var even \u003d Math.floor((milis / 1000) % 2) \u003d\u003d 1; \n\n\tvar temp \u003d process\n\t\t.run(\"/opt/vc/bin/vcgencmd measure_temp\")\n\t\t.stdOut\n\t\t.substring(5, 9) + \"\u0027C\";\n\n        var cpu \u003d process\n\t\t.run(\"/bin/grep \u0027cpu \u0027 /proc/stat\")\n\t\t.stdOut;\n\n\tled\n\t\t.clear()\n\t\t.putString(temp, color, 0, 0)\n\t\t.render();\n};",
+    "code": "var process \u003d new Process();\nvar brightness \u003d 128;\nvar bgColor \u003d new Color(brightness, 0, 0);\nvar color \u003d new Color(brightness, brightness, brightness);\n\nvar init \u003d function() {\n\tledDisplay\n\t\t.clear()\n\t\t.render()\n\t\t.setFont(Fonts.valueOf(\"FONT_8X8\").font)\n};\n\nvar interval \u003d function(milis) {\n\tvar temp \u003d process\n\t\t.run(\"/opt/vc/bin/vcgencmd measure_temp\")\n\t\t.stdOut\n\t\t.substring(5, 9);\n        temp \u003d Math.round(parseFloat(temp));\n\tledDisplay\n\t\t.fill(bgColor)\n\t\t.putString(temp + String.fromCharCode(248) + \"C\", color, 0, 0)\n\t\t.render();\n};",
     "permissions": [
       "LED",
-      "INTERVAL"
+      "INTERVAL",
+      "PROCESS"
     ],
     "autoStart": false,
-    "interval": 1000
+    "interval": 1000,
+    "description": "Shows the CPU temp using the process API."
   },
   {
     "id": 9,
@@ -101,13 +106,14 @@
     "author": {
       "name": "GK"
     },
-    "code": "var palette \u003d [];\nvar led \u003d null;\nvar width \u003d 32;\nvar height \u003d 8;\n\nvar dist \u003d function(a, b, c, d) {\n  return Math.sqrt((a - c) * (a - c) + (b - d) * (b - d));\n};\n\nvar color \u003d function(x, y, time) {\n\n   return (128 + (128 * Math.sin(x * 0.0225)) +\n           128 + (128 * Math.sin(y * 0.01125)) +\n           128 + (128 * Math.sin(dist(x + time, y - time, width, height) * 0.056)) +\n           128 + (128 * Math.sin(Math.sqrt(x * x + y * y) * 0.125)) ) * 0.25;\n}\n\nvar app \u003d function(ledDisplay) {\n  for (var i \u003d 0; i \u003c 255; i++) {\n    var r \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 32));\n    var g \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 64));\n    var b \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 128));\n    palette[i] \u003d new Color(r, g, b);\n  }\n\n  led \u003d ledDisplay\n    .clear()\n    .render();\n};\n\nvar interval \u003d function(milis) {\n  milis /\u003d 64;\n  var i \u003d 0;\n  for (var x \u003d 0; x \u003c width; x++) {\n    for (var y \u003d 0; y \u003c height; y++) {\n      led.putPixel(x, y, palette[~~color(x, y, milis) % palette.length]);\n    }\n  }\n  led.render();\n}",
+    "code": "var palette \u003d [];\nvar led \u003d null;\nvar width \u003d 32;\nvar height \u003d 8;\n\nvar dist \u003d function(a, b, c, d) {\n  return Math.sqrt((a - c) * (a - c) + (b - d) * (b - d));\n};\n\nvar color \u003d function(x, y, time) {\n   return (128 + (128 * Math.sin(x * 0.0225)) +\n           128 + (128 * Math.sin(y * 0.01125)) +\n           128 + (128 * Math.sin(dist(x + time, y - time, width, height) * 0.056)) +\n           128 + (128 * Math.sin(Math.sqrt(x * x + y * y) * 0.125)) ) * 0.25;\n}\n\nvar init \u003d function() {\n  for (var i \u003d 0; i \u003c 255; i++) {\n    var r \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 32));\n    var g \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 64));\n    var b \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 128));\n    palette[i] \u003d new Color(r, g, b);\n  }\n\n  ledDisplay\n    .clear()\n    .render();\n};\n\nvar interval \u003d function(milis) {\n  milis /\u003d 64;\n  var i \u003d 0;\n  for (var x \u003d 0; x \u003c width; x++) {\n    for (var y \u003d 0; y \u003c height; y++) {\n      ledDisplay.putPixel(x, y, palette[~~color(x, y, milis) % palette.length]);\n    }\n  }\n  ledDisplay.render();\n}",
     "permissions": [
       "LED",
       "INTERVAL"
     ],
     "autoStart": false,
-    "interval": 50
+    "interval": 50,
+    "description": "A classic demo plasma effect."
   },
   {
     "id": 10,
@@ -116,15 +122,14 @@
     "author": {
       "name": "GK"
     },
-    "code": "var palette \u003d [];\nvar led \u003d null;\nvar width \u003d 32;\nvar height \u003d 8;\nvar process \u003d new Process();\n\nvar dist \u003d function(a, b, c, d) {\n  return Math.sqrt((a - c) * (a - c) + (b - d) * (b - d));\n};\n\nvar color \u003d function(x, y, time) {\n\n   return (128 + (128 * Math.sin(x * 0.0225)) +\n           128 + (128 * Math.sin(y * 0.01125)) +\n           128 + (128 * Math.sin(dist(x + time, y - time, width, height) * 0.056)) +\n           128 + (128 * Math.sin(Math.sqrt(x * x + y * y) * 0.125)) ) * 0.25;\n}\n\nvar app \u003d function(ledDisplay) {\n  for (var i \u003d 0; i \u003c 255; i++) {\n    var r \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 32));\n    var g \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 64));\n    var b \u003d Math.abs(64 + 128 * Math.sin(Math.PI * i / 128));\n    palette[i] \u003d new Color(r, g, b);\n  }\n\n  led \u003d ledDisplay\n    .clear()\n    .render();\n};\n\nvar interval \u003d function(milis) {\n  milis /\u003d 64;\n  var i \u003d 0;\n  for (var x \u003d 0; x \u003c width; x++) {\n    for (var y \u003d 0; y \u003c height; y++) {\n      led.putPixel(x, y, palette[~~color(x, y, milis) % palette.length]);\n    }\n  }\n\n\tvar temp \u003d process\n\t\t.run(\"/opt/vc/bin/vcgencmd measure_temp\")\n\t\t.stdOut\n\t\t.substring(5, 9) + \"C\";\n\n\n\tled.setFont(Fonts.FONT_6X8.font)\n\t\t.putString(temp, Color.BLACK, 1, 0)\n\t\t.render();\n}",
+    "code": "var palette \u003d [];\nvar width \u003d 32;\nvar height \u003d 8;\nvar process \u003d new Process();\n\nvar dist \u003d function(a, b, c, d) {\n\treturn Math.sqrt((a - c) * (a - c) + (b - d) * (b - d));\n};\n\nvar color \u003d function(x, y, time) {\n\treturn (255 + (255 * Math.sin(x * 0.0225)) +\n\t\t255 + (255 * Math.sin(y * 0.01125)) +\n\t\t255 + (255 * Math.sin(dist(x + time, y - time, width, height) * 0.056)) +\n\t\t255 + (255 * Math.sin(Math.sqrt(x * x + y * y) * 0.125))) * 0.25;\n}\n\nvar init \u003d function() {\n\tfor (var i \u003d 0; i \u003c 255; i++) {\n\t\tvar r \u003d Math.abs(128 + 128 * Math.sin(Math.PI * i / 32));\n\t\tvar g \u003d Math.abs(128 + 128 * Math.sin(Math.PI * i / 64));\n\t\tvar b \u003d Math.abs(128 + 128 * Math.sin(Math.PI * i / 128));\n\t\tpalette[i] \u003d new Color(r, g, b);\n\t}\n\n\tledDisplay\n        .setFont(Fonts.FONT_6X8.font)\n\t\t.clear()\n\t\t.render();\n};\n\nvar interval \u003d function(milis) {\n\tmilis /\u003d 64;\n\tvar i \u003d 0;\n\tfor (var x \u003d 0; x \u003c width; x++) {\n\t\tfor (var y \u003d 0; y \u003c height; y++) {\n\t\t\tledDisplay.putPixel(x, y, palette[~~color(x, y, milis) % palette.length]);\n\t\t}\n\t}\n  \n\tvar temp \u003d process\n\t\t.run(\"/opt/vc/bin/vcgencmd measure_temp\")\n\t\t.stdOut\n\t\t.substring(5, 9) + \"C\";\n\n\tledDisplay\n\t\t.putString(temp, Color.BLACK, 1, 0)\n\t\t.render();\n}",
     "permissions": [
       "LED",
-      "HTTP",
-      "API",
-      "INTERVAL"
+      "INTERVAL",
+      "PROCESS"
     ],
     "autoStart": false,
-    "interval": 50
+    "interval": 125
   },
   {
     "id": 11,
@@ -133,11 +138,95 @@
     "author": {
       "name": "GK"
     },
-    "code": "var indexHtml \u003d \"\u003c!DOCTYPE html\u003e \\\n\u003chtml\u003e \\\n\u003chead\u003e \\\n\t\u003cstyle\u003e \\\n       .color-selector { \\\n         width: 32px; \\\n         height: 32px; \\\n         float: left; \\\n       } \\\n\t\u003c/style\u003e \\\n\u003c/head\u003e \\\n\u003cbody\u003e \\\n\t\u003cdiv\u003e \\\n\t\t\u003ccanvas id\u003d\u0027canvas\u0027 width\u003d\u0027640\u0027 height\u003d\u0027160\u0027 style\u003d\u0027outline: #000 1px solid\u0027\u003e\u003c/canvas\u003e \\\n\t\u003c/div\u003e \\\n\t\u003cdiv\u003e \\\n\t\t\u003cinput type\u003d\u0027color\u0027 id\u003d\u0027color\u0027 /\u003e \\\n\t\t\u003cinput type\u003d\u0027file\u0027 id\u003d\u0027file\u0027/\u003e \\\n\t\t\u003cbutton id\u003d\u0027draw-image\u0027\u003eDraw@CaClock\u003c/button\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ff0000\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#00ff00\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#0000ff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ffff00\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#00ffff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ff00ff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#000000\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ffffff\u0027\u003e\u003c/div\u003e \\\n\t\u003c/div\u003e \\\n \\\n\t\u003cscript\u003e \\\n\tvar scaleFactor \u003d 20; \\\n\tvar canvas \u003d document.querySelector(\u0027#canvas\u0027); \\\n\tvar file \u003d document.querySelector(\u0027#file\u0027); \\\n\tvar color \u003d document.querySelector(\u0027#color\u0027); \\\n\tvar drawImage \u003d document.querySelector(\u0027#draw-image\u0027); \\\n\tvar ctx \u003d canvas.getContext(\u00272d\u0027); \\\n\tvar bufer \u003d ctx.getImageData(0, 0, canvas.width,canvas.height); \\\n    var pressed \u003d false; \\\n \\\n\tfile.addEventListener(\u0027change\u0027, function (e) { \\\n\t\tvar img \u003d new Image; \\\n\t\timg.onload \u003d function() { \\\n\t\t    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); \\\n\t\t}; \\\n\t\timg.src \u003d URL.createObjectURL(e.target.files[0]); \\\n\t}); \\\n \\\n\tdrawImage.addEventListener(\u0027click\u0027, function (e) { \\\n\t\tfor (var x \u003d 0; x \u003c canvas.width; x +\u003d scaleFactor) { \\\n\t    \tfor (var y \u003d 0; y \u003c canvas.height; y +\u003d scaleFactor) { \\\n    \t        var imgData \u003d ctx.getImageData(x, y, 1, 1).data;  \\\n    \t        var xc \u003d x / scaleFactor;  \\\n    \t        var yc \u003d y / scaleFactor;  \\\n    \t        getAjax(`?x\u003d${xc}\u0026y\u003d${yc}\u0026r\u003d${imgData[0]}\u0026g\u003d${imgData[1]}\u0026b\u003d${imgData[2]}`); \\\n\t    \t} \\\n\t    } \\\n\t}); \\\n \\\n\tdocument.querySelectorAll(\u0027.color-selector\u0027).forEach(function(elm) { \\\n\t  elm.style.backgroundColor \u003d elm.dataset.color; \\\n\t  elm.addEventListener(\u0027click\u0027, function(e){ \\\n\t  \tcolor.value \u003d ctx.fillStyle \u003d e.target.dataset.color; \\\n\t  }); \\\n\t}); \\\n \\\n\tvar getAjax \u003d function(url, success) { \\\n        var xhr \u003d new XMLHttpRequest(); \\\n        xhr.open(\u0027GET\u0027, url); \\\n        xhr.setRequestHeader(\u0027X-Requested-With\u0027, \u0027XMLHttpRequest\u0027); \\\n        xhr.send(); \\\n        return xhr; \\\n    }; \\\n \\\n\tvar getMousePos \u003d function(evt) { \\\n\t  var rect \u003d canvas.getBoundingClientRect(); \\\n\t  var scaleX \u003d canvas.width / rect.width; \\\n\t  var scaleY \u003d canvas.height / rect.height; \\\n\t  var x \u003d (evt.clientX - rect.left) * scaleX; \\\n\t  var y \u003d (evt.clientY - rect.top) * scaleY; \\\n \\\n\t  return {x: Math.floor(x / scaleFactor) * scaleFactor, y: Math.floor(y / scaleFactor) * scaleFactor}; \\\n\t}; \\\n \\\n\tcanvas.addEventListener(\u0027mousedown\u0027, function(){ \\\n\t\tpressed \u003d true; \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027mousemove\u0027, function(e){ \\\n\t\tif (pressed) { \\\n\t\t\tvar position \u003d getMousePos(e); \\\n            ctx.fillRect(position.x, position.y, scaleFactor, scaleFactor); \\\n\t\t} \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027click\u0027, function(e){ \\\n\t\t\tvar position \u003d getMousePos(e); \\\n            ctx.fillRect(position.x, position.y, scaleFactor, scaleFactor); \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027mouseup\u0027, function(){ \\\n\t\tpressed \u003d false; \\\n\t}); \\\n \\\n\tcolor.addEventListener(\u0027change\u0027, function(e){ \\\n\t\tctx.fillStyle \u003d e.target.value; \\\n\t}); \\\n\t\u003c/script\u003e \\\n\u003c/body\u003e \\\n\u003c/html\u003e\";\n\nvar led \u003d null;\n\nvar app \u003d function(ledDisplay) {\n  led \u003d ledDisplay\n        .clear()\n        .render();\n};\n\n\nvar api \u003d function (request, response) {\n  if (request.queryParams().size() \u003d\u003d\u003d 0) {\n    return indexHtml;\n  }\n\n  var x \u003d parseInt(request.queryParams(\"x\"));\n  var y \u003d parseInt(request.queryParams(\"y\"));\n  var r \u003d parseInt(request.queryParams(\"r\"));\n  var g \u003d parseInt(request.queryParams(\"g\"));\n  var b \u003d parseInt(request.queryParams(\"b\"));\n\n  led\n    .putPixel(x, y, new Color(r, g, b))\n    .render();\n\n  return x + \" \" + y + \" \u003d \" + (r+g+b) ;\n}",
+    "code": "var indexHtml \u003d \"\u003c!DOCTYPE html\u003e \\\n\u003chtml\u003e \\\n\u003chead\u003e \\\n\t\u003cstyle\u003e \\\n       .color-selector { \\\n         width: 32px; \\\n         height: 32px; \\\n         float: left; \\\n       } \\\n\t\u003c/style\u003e \\\n\u003c/head\u003e \\\n\u003cbody\u003e \\\n\t\u003cdiv\u003e \\\n\t\t\u003ccanvas id\u003d\u0027canvas\u0027 width\u003d\u0027640\u0027 height\u003d\u0027160\u0027 style\u003d\u0027outline: #000 1px solid\u0027\u003e\u003c/canvas\u003e \\\n\t\u003c/div\u003e \\\n\t\u003cdiv\u003e \\\n\t\t\u003cinput type\u003d\u0027color\u0027 id\u003d\u0027color\u0027 /\u003e \\\n\t\t\u003cinput type\u003d\u0027file\u0027 id\u003d\u0027file\u0027/\u003e \\\n\t\t\u003cbutton id\u003d\u0027draw-image\u0027\u003eDraw@CaClock\u003c/button\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ff0000\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#00ff00\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#0000ff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ffff00\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#00ffff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ff00ff\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#000000\u0027\u003e\u003c/div\u003e \\\n\t\t\u003cdiv class\u003d\u0027color-selector\u0027 data-color\u003d\u0027#ffffff\u0027\u003e\u003c/div\u003e \\\n\t\u003c/div\u003e \\\n \\\n\t\u003cscript\u003e \\\n\tvar scaleFactor \u003d 20; \\\n\tvar canvas \u003d document.querySelector(\u0027#canvas\u0027); \\\n\tvar file \u003d document.querySelector(\u0027#file\u0027); \\\n\tvar color \u003d document.querySelector(\u0027#color\u0027); \\\n\tvar drawImage \u003d document.querySelector(\u0027#draw-image\u0027); \\\n\tvar ctx \u003d canvas.getContext(\u00272d\u0027); \\\n\tvar bufer \u003d ctx.getImageData(0, 0, canvas.width,canvas.height); \\\n    var pressed \u003d false; \\\n \\\n\tfile.addEventListener(\u0027change\u0027, function (e) { \\\n\t\tvar img \u003d new Image; \\\n\t\timg.onload \u003d function() { \\\n\t\t    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); \\\n\t\t}; \\\n\t\timg.src \u003d URL.createObjectURL(e.target.files[0]); \\\n\t}); \\\n \\\n\tdrawImage.addEventListener(\u0027click\u0027, function (e) { \\\n\t\tfor (var x \u003d 0; x \u003c canvas.width; x +\u003d scaleFactor) { \\\n\t    \tfor (var y \u003d 0; y \u003c canvas.height; y +\u003d scaleFactor) { \\\n    \t        var imgData \u003d ctx.getImageData(x, y, 1, 1).data;  \\\n    \t        var xc \u003d x / scaleFactor;  \\\n    \t        var yc \u003d y / scaleFactor;  \\\n    \t        getAjax(`?x\u003d${xc}\u0026y\u003d${yc}\u0026r\u003d${imgData[0]}\u0026g\u003d${imgData[1]}\u0026b\u003d${imgData[2]}`); \\\n\t    \t} \\\n\t    } \\\n\t}); \\\n \\\n\tdocument.querySelectorAll(\u0027.color-selector\u0027).forEach(function(elm) { \\\n\t  elm.style.backgroundColor \u003d elm.dataset.color; \\\n\t  elm.addEventListener(\u0027click\u0027, function(e){ \\\n\t  \tcolor.value \u003d ctx.fillStyle \u003d e.target.dataset.color; \\\n\t  }); \\\n\t}); \\\n \\\n\tvar getAjax \u003d function(url, success) { \\\n        var xhr \u003d new XMLHttpRequest(); \\\n        xhr.open(\u0027GET\u0027, url); \\\n        xhr.setRequestHeader(\u0027X-Requested-With\u0027, \u0027XMLHttpRequest\u0027); \\\n        xhr.send(); \\\n        return xhr; \\\n    }; \\\n \\\n\tvar getMousePos \u003d function(evt) { \\\n\t  var rect \u003d canvas.getBoundingClientRect(); \\\n\t  var scaleX \u003d canvas.width / rect.width; \\\n\t  var scaleY \u003d canvas.height / rect.height; \\\n\t  var x \u003d (evt.clientX - rect.left) * scaleX; \\\n\t  var y \u003d (evt.clientY - rect.top) * scaleY; \\\n \\\n\t  return {x: Math.floor(x / scaleFactor) * scaleFactor, y: Math.floor(y / scaleFactor) * scaleFactor}; \\\n\t}; \\\n \\\n\tcanvas.addEventListener(\u0027mousedown\u0027, function(){ \\\n\t\tpressed \u003d true; \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027mousemove\u0027, function(e){ \\\n\t\tif (pressed) { \\\n\t\t\tvar position \u003d getMousePos(e); \\\n            ctx.fillRect(position.x, position.y, scaleFactor, scaleFactor); \\\n\t\t} \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027click\u0027, function(e){ \\\n\t\t\tvar position \u003d getMousePos(e); \\\n            ctx.fillRect(position.x, position.y, scaleFactor, scaleFactor); \\\n\t}); \\\n \\\n\tcanvas.addEventListener(\u0027mouseup\u0027, function(){ \\\n\t\tpressed \u003d false; \\\n\t}); \\\n \\\n\tcolor.addEventListener(\u0027change\u0027, function(e){ \\\n\t\tctx.fillStyle \u003d e.target.value; \\\n\t}); \\\n\t\u003c/script\u003e \\\n\u003c/body\u003e \\\n\u003c/html\u003e\";\n\nvar init \u003d function() {\n  ledDisplay\n        .clear()\n        .render();\n};\n\n\nvar api \u003d function (request, response) {\n  if (request.queryParams().size() \u003d\u003d\u003d 0) {\n    return indexHtml;\n  }\n\n  var x \u003d parseInt(request.queryParams(\"x\"));\n  var y \u003d parseInt(request.queryParams(\"y\"));\n  var r \u003d parseInt(request.queryParams(\"r\"));\n  var g \u003d parseInt(request.queryParams(\"g\"));\n  var b \u003d parseInt(request.queryParams(\"b\"));\n\n  ledDisplay\n    .putPixel(x, y, new Color(r, g, b))\n    .render();\n\n  return x + \" \" + y + \" \u003d \" + (r+g+b) ;\n}",
     "permissions": [
       "LED",
-      "API"
+      "HTTP_SERVER"
+    ],
+    "autoStart": false,
+    "description": "Allows the user to paint a picture via API and send it @CaClk"
+  },
+  {
+    "id": 12,
+    "name": "Syntax error",
+    "version": "0.0.1",
+    "author": {
+      "name": "GK"
+    },
+    "code": "var init \u003d function() {\n  ledDisplay\n    .clear()\n    .putPixel(1, 1,\n    .render();\n};",
+    "permissions": [
+      "LED"
     ],
     "autoStart": false
+  },
+  {
+    "id": 13,
+    "name": "Weather",
+    "version": "0.0.1",
+    "author": {
+      "name": "GK",
+      "eMail": "mail@cacodaemon.de"
+    },
+    "code": "var city \u003d null;\nvar led \u003d null;\nvar message \u003d null;\nvar font \u003d Fonts.FONT_5X8.font;\nvar charsMax \u003d Math.floor(32 / font.fontWidth);\nvar offset \u003d 0;\nvar dir \u003d 1;\n\nvar init \u003d function() {\n  ledDisplay.setFont(font);\n\n  city \u003d settings.city;\n  var weather \u003d callYahooWeatherAPI(city);\n  var tempCelsius \u003d Math.round((5 / 9) * (parseInt(weather.temp) - 32))\n  message \u003d city + \": \" + tempCelsius + String.fromCharCode(248) + \"C \" + weather.text;\n};\n\nvar callYahooWeatherAPI \u003d function(city) {\n  var url \u003d \"http://query.yahooapis.com/v1/public/yql?q\u003dselect item.condition from weather.forecast where woeid in (select woeid from geo.places(1) where text\u003d\\\"\" + city + \"\\\")\u0026format\u003djson\u0026env\u003dstore://datatables.org/alltableswithkeys\u0026diagnostics\u003dfalse\";\n\n  var request \u003d new OkHttpRequest\n    .Builder()\n    .url(url)\n    .build();\n\n  var response \u003d new OkHttpClient()\n    .newCall(request)\n    .execute()\n    .body()\n    .string();\n\n  return JSON.parse(response).query.results.channel.item.condition;\n};\n\nvar interval \u003d function() {\n  offset +\u003d dir;\n  \n  if (offset + charsMax \u003e message.length || offset \u003c 1) {\n    dir *\u003d -1;\n  }\n  \n  ledDisplay\n    .fill(new Color(3,6,12))\n    .putString(message.substring(offset, offset + charsMax + 1), new Color(96,32,0), 0, 0)\n    .render();\n};",
+    "permissions": [
+      "LED",
+      "HTTP_CLIENT",
+      "INTERVAL",
+      "SETTINGS"
+    ],
+    "autoStart": false,
+    "interval": 250,
+    "description": "Fetches the weather from Yahoo",
+    "settings": "{\n  \"city\": \"cologne\"\n}"
+  },
+  {
+    "id": 14,
+    "name": "CountDown",
+    "version": "0.0.1",
+    "author": {
+      "name": "GK"
+    },
+    "code": "var init \u003d function() {\n  ledDisplay\n    .clear()\n    .setFont(Fonts.FONT_4X7.font)\n    .render();\n};\n\nvar interval \u003d function () {\n  var now \u003d DateTime.now();\n  var to \u003d DateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), settings.hour, settings.minute, settings.seconds);\n  var diff \u003d now.until(to, ChronoUnit.SECONDS);\n  \n  ledDisplay\n    .clear()\n    .putString(diff + \"\", new Color(32,16,56), 0, 0)\n    .render();\n}",
+    "permissions": [
+      "LED",
+      "INTERVAL",
+      "DATE_TIME",
+      "SETTINGS"
+    ],
+    "autoStart": false,
+    "interval": 1000,
+    "settings": "{\n  \"hour\": 22,\n  \"minute\": 59,\n  \"second\": 59,\n}"
+  },
+  {
+    "id": 15,
+    "name": "Logger Test",
+    "version": "0.0.1",
+    "author": {
+      "name": "GK"
+    },
+    "code": "var init \u003d function() {\n  log(\"Logs a message…\");\n  ledDisplay\n    .clear()\n    .render();\n};",
+    "permissions": [
+      "LED",
+      "LOGGER"
+    ],
+    "autoStart": false,
+    "description": "Example how to use the integrated logger.",
+    "settings": "{}"
+  },
+  {
+    "id": 16,
+    "name": "Fire Effect",
+    "version": "0.0.1",
+    "author": {
+      "name": "GK"
+    },
+    "code": "var colors \u003d [];\nvar fire \u003d [];\nvar threshold \u003d 0.6;\nvar width \u003d 32;\nvar height \u003d 8;\n\nvar randomizeThreshold \u003d function() {\n\tthreshold +\u003d Math.random() * 0.2 - 0.1;\n\tthreshold \u003d Math.min(Math.max(threshold, 0.5), 0.8);\n}\n\nvar init \u003d function() {\n\tledDisplay\n\t\t.clear()\n\t\t.render();\n\n\n\tfor (var i \u003d 0; i \u003c 256; i++) {\n\t\tcolors[i] \u003d Color.BLACK;\n\t}\n\n\tfor (var i \u003d 0; i \u003c 32; ++i) {\n\t\tcolors[i] \u003d new Color(0, 0, i \u003c\u003c 1);\n\t\tcolors[i + 32] \u003d new Color(i \u003c\u003c 3, 0, 32 - (i \u003c\u003c 1));\n\t\tcolors[i + 64] \u003d new Color(255, i \u003c\u003c 3, 0);\n\t\tcolors[i + 96] \u003d new Color(255, 255, i \u003c\u003c 2);\n\t\tcolors[i + 128] \u003d new Color(255, 255, 32 + (i \u003c\u003c 2));\n\t\tcolors[i + 160] \u003d new Color(255, 255, 64 + (i \u003c\u003c 2));\n\t\tcolors[i + 192] \u003d new Color(255, 255, 96 + i);\n\t\tcolors[i + 224] \u003d new Color(255, 255, 128 + i);\n\t}\n\n\tfor (var i \u003d 0; i \u003c width * height; i++) {\n\t\tfire[i] \u003d 0;\n\t}\n};\n\nvar interval \u003d function(milis) {\n\tvar bottomLine \u003d width * (height - 1);\n\tfor (var x \u003d 0; x \u003c width; x++) {\n\t\tfire[bottomLine + x] \u003d Math.random() \u003e threshold ? 255 : 0;\n\t}\n\n\tfor (var y \u003d 0; y \u003c height; ++y) {\n\t\tfor (var x \u003d 0; x \u003c width; ++x) {\n\t        var value \u003d 0;\n\t\t\tif (x \u003c 1) {\n\t\t\t\tvalue \u003d fire[bottomLine];\n\t\t\t\tvalue +\u003d fire[bottomLine];\n\t\t\t\tvalue +\u003d fire[bottomLine - width];\n\t\t\t\tvalue /\u003d 3;\n\t\t\t} else if (x \u003d\u003d width - 1) {\n\t\t\t\tvalue \u003d fire[bottomLine + x];\n\t\t\t\tvalue +\u003d fire[bottomLine - width + x];\n\t\t\t\tvalue +\u003d fire[bottomLine + x - 1];\n\t\t\t\tvalue /\u003d 3;\n\t\t\t} else {\n\t\t\t\tvalue \u003d fire[bottomLine + x];\n\t\t\t\tvalue +\u003d fire[bottomLine + x + 1];\n\t\t\t\tvalue +\u003d fire[bottomLine + x - 1];\n\t\t\t\tvalue +\u003d fire[bottomLine - width + x];\n\t\t\t\tvalue /\u003d 4;\n\t\t\t}\n\n\t\t\tif (value \u003e 1) {\n\t\t\t\tvalue -\u003d 1;\n            }\n\n\t\t\tfire[bottomLine - width + x] \u003d Math.floor(value);\n\t\t}\n\n\t\tbottomLine -\u003d width;\n\t}\n\n\n\tledDisplay\n\t\t.clear();\n\tvar skipRows \u003d 1;\n\n\tfor (var y \u003d skipRows; y \u003c height; ++y) {\n\t\tfor (var x \u003d 0; x \u003c width; ++x) {\n\t\t\tvar value \u003d fire[(y - skipRows) * width + x];\n\n\t\t\tledDisplay\n\t\t\t\t.putPixel(x, y, colors[value])\n\t\t}\n\t}\n\n\tledDisplay\n\t\t.render();\n};",
+    "permissions": [
+      "LED",
+      "INTERVAL"
+    ],
+    "autoStart": false,
+    "interval": 200,
+    "settings": "{}"
   }
 ]

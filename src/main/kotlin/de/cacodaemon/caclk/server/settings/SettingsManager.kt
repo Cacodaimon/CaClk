@@ -20,7 +20,8 @@ object SettingsManager {
             ledCount = 256,
             stripType = WS2811_STRIP_GBR,
             invert = false,
-            brightness = 64
+            brightness = 255,
+            softBrightness = 0.5
     )
 
     lateinit var settings: Settings
