@@ -46,7 +46,10 @@
       let that = this;
       let webSocket = new ReconnectingWebSocket(`ws://${location.hostname}:${location.port}/log`);
       webSocket.onmessage = function (msg) {
-        that.logMessages.unshift(JSON.parse(msg.data))
+        that.logMessages.unshift(JSON.parse(msg.data));
+        if (that.logMessages.length > 32) {
+          that.logMessages.pop();
+        }
       };
 
       webSocket.onclose = function () {
