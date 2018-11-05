@@ -1,5 +1,5 @@
-.idea/
-.gradle/
-build/
-gradle/
-CaClock.iml
+/.idea/
+/.gradle/
+/build/
+/gradle/
+/CaClock.iml
